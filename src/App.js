@@ -167,7 +167,7 @@ function GameMenu({ inGameSetter }) {
         {games.map((g) => (
           <button className="bg-red-900 p-4 p-4" onClick={e => {
             fetch('/api/joinGame', {
-              method: "post",
+              method: "POST",
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
