@@ -130,7 +130,10 @@ console.log(gameState);
             mirrored={true}
           /> 
       {gameData.gameUsers.map((u) => (
+        <>
+        <p>u[2]</p>
         <PlayerCard name={u[2]} /> // TODO Generate player stat cards from gamestate users
+        </>
       ))}
     </>
   );
