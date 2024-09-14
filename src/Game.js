@@ -37,7 +37,10 @@ function Game( { gameID, inGameSetter, userData }) {
             setCurrentGif("bg-[url('rightCrash.gif')]");
         } else if(action == "nocar"){
             setCurrentGif("bg-[url('nocar.gif')]");
+
         }
+        console.log(action);
+        console.log("SETTING CURRENT GIF")
     }, [action]);
 
     const capture = useCallback(() => {
