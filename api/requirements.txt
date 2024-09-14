@@ -1,0 +1,17 @@
+Flask==2.0.1
+itsdangerous==2.0.1
+Jinja2==3.0.1
+MarkupSafe==2.0.1
+python-dotenv==0.17.1
+Werkzeug==2.0.1
+psycopg2-binary
+requests==2.26.0
+ratelimit==2.2.1
+flask-session==0.4.0
+schedule==1.1.0
+loguru==0.5.1
+google-api-python-client==2.86.0
+google-auth-httplib2==0.1.0
+google-auth-oauthlib==1.0.0
+pyu2f
+textstat==0.7.2
