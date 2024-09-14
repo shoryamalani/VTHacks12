@@ -123,7 +123,7 @@ console.log(gameState);
             width={480}
             ref={webcamRef}
             mirrored={true}
-            style={{zIndex:-1, position: 'absolute'}}
+            style={{zIndex:-1, position: 'absolute', top: 0, left: 0}}
           />
       </div>
       
@@ -207,7 +207,7 @@ function GameManager () {
 
 function App() {
   return (
-    <div className="p-12  text-slate-200 grid grid-cols-3">
+    <div className="p-12  text-slate-200 grid grid-cols-3 " style={{'z-index': 1,"backgroundColor":"#272531",minHeight:480}}>
       <GameManager />
     </div>
   );

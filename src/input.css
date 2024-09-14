@@ -12,7 +12,9 @@ body {
   font-family: 'Joystix','comic sans ms';
   /* -webkit-font-smoothing: antialiased; */
   -moz-osx-font-smoothing: grayscale;
-  background-color: #272531
+  background-color: #272531;
+  
+
 }
 .player-card:hover {
   transform: scale(1.05); /* Slightly larger */
