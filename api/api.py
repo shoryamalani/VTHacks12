@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import random
 app = Flask(__name__)
+import datetime
 
 import time
 from flask import Flask, jsonify, request , redirect, url_for, request, session
@@ -120,9 +121,99 @@ def upload_video():
         # reduce score by 3
         # set active to false
         # set reason
-        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason)
+        if user[9] == True:
+            # check if the power up has expired
+
+            if datetime.datetime.strptime(user[10], '%Y-%m-%d %H:%M:%S.%f') < datetime.datetime.now():
+                nextPowerUp = 0
+                if user[11] in powerUpLine:
+                    nextPowerUp = powerUpLine[powerUpLine.index(user[11])+1]
+                else:
+                    nextPowerUp = user[11] + 300
+                dbs_worker.update_user_power_up(dbs_worker.set_up_connection(),user_id,"",False,0,nextPowerUp)
+            if user[8] == "Attention Grabbing":
+                # get all the other users
+                gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[2])
+                # for each user that is not focused add one point
+                bonus = 0
+                for gameUser in gameUsers:
+                    if gameUser[0] != user_id:
+                        if gameUser[4] == False:
+                            bonus += 1
+            elif user[8] == "Perfectionist":
+                #check the last 5 minutes
+                finalJson = json.loads(user[13])
+                missedTimes = finalJson['missedTimes']
+                missedTimes = [datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f') for x in missedTimes]
+                missedTimes = [x for x in missedTimes if x > datetime.datetime.now() - datetime.timedelta(minutes=5)]
+                update = 1
+                if len(missedTimes) < 16:
+                    update = 3
+
+                dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, update,reason,True)
+                
+            elif user[8] == "Devious Meddling":
+                # get all the other users
+
+
+                gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[2])
+                # get highest user score
+                highestScore = 0
+                user = None
+                for gameUser in gameUsers:
+                    if gameUser[0] != user_id:
+                        if gameUser[3] > highestScore:
+                            if gameUser[0] != user_id:
+                                highestScore = gameUser[3]
+                                user = gameUser
+                if user != None:
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user[0], random.choice([0,0,0,0,-1]),reason,True)
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([1,1,1,1,2]),reason,True) 
+                else:
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
+
+
+                
+        else:
+            
+            dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
     else:
-        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -1,reason)
+        
+        if user[9] == True and datetime.datetime.strptime(user[10], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now():
+                if user[8] == "gotta PEE!":
+                    print(" GOTTA PEE IS ACTIVE")
+                    finalJson = json.loads(user[13])
+                    finalJson['missedTimes'].append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.randint(0,1),reason,False,finalJson)
+        else:
+            finalJson = json.loads(user[13])
+            finalJson['missedTimes'].append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
+            dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -1,reason,False,finalJson)
+
+    # get game users
+    gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[2])
+    # check if you are the only one unfocused
+    unfocused = 0
+    for gameUser in gameUsers:
+        if gameUser[4] == False:
+            unfocused += 1
+    if unfocused == 1:
+        if user[4] == False:
+            dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -1,reason,True)
+
+    # check if disctracted more than 150 times in the last 3 minutes
+    finalJson = json.loads(user[13])
+    missedTimes = finalJson['missedTimes']
+    missedTimes = [datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f') for x in missedTimes]
+    missedTimes = [x for x in missedTimes if x > datetime.datetime.now() - datetime.timedelta(minutes=9)]
+    if len(missedTimes) > 55*9:
+        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
+    finalJson = json.loads(user[13])
+    missedTimes = finalJson['missedTimes']
+    missedTimes = [datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S.%f') for x in missedTimes]
+    missedTimes = [x for x in missedTimes if x > datetime.datetime.now() - datetime.timedelta(minutes=3)]
+    if len(missedTimes) > 55*3:
+        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -1,reason,True)
     # Now you have a list of MediaPipe Image objects
     # You can process these images using MediaPipe's tools
 

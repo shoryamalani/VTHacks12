@@ -8,6 +8,7 @@ load_dotenv()
 import pypika
 import random
 import datetime
+import json
 
 def set_up_connection():
     # Path to .env file
@@ -69,6 +70,7 @@ def create_db(DB_PATH):
         powerUpExpiry DATE,
         nextPowerUpVal INTEGER,
         activeDebuff VARCHAR(255),
+        previousFocusAmounts json
     )
     """
     )
@@ -192,7 +194,7 @@ def get_live_game_users(conn, game_id):
             conn.commit()
     return users
 
-def update_user_score(conn, user_id, score,reason):
+def update_user_score(conn, user_id, score,reason,liveFocused,previousFocusAmounts=None):
     command = "UPDATE players SET score = score + ? WHERE id = ?"
     cur = conn.cursor()
     cur.execute(command, (score, user_id))
@@ -201,16 +203,27 @@ def update_user_score(conn, user_id, score,reason):
     cur.execute(command, (reason, user_id))
     # set last updated
     command = "UPDATE players SET lastUpdated = datetime('now') WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (user_id,))
+    # set active
+    command = "UPDATE players SET liveFocused = ? WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (liveFocused, user_id))
     conn.commit()
+    if previousFocusAmounts != None:
+        command = "UPDATE players SET previousFocusAmounts = ? WHERE id = ?"
+        cur = conn.cursor()
+        cur.execute(command, (json.dumps(previousFocusAmounts), user_id))
+        conn.commit()
     return conn
 
 def create_user(conn, game_id):
-    command = "INSERT INTO players (name, score, liveFocused, reason,lastUpdated,game_id,active,nextPowerUpVal) VALUES (?, 0, 0, '', datetime('now'),?,1,10)"
+    command = "INSERT INTO players (name, score, liveFocused, reason,lastUpdated,game_id,active,nextPowerUpVal,previousFocusAmounts ) VALUES (?, 0, 0, '', datetime('now'),?,1,10,?)"
     cur = conn.cursor()
     randomAdjective = ['Happy', 'Sad', 'Angry', 'Excited', 'Bored', 'Tired', 'Sleepy', 'Hungry', 'Thirsty']
     randomNoun = ['Dog', 'Cat', 'Bird', 'Fish', 'Elephant', 'Lion', 'Tiger', 'Bear', 'Monkey', 'Giraffe']
     randomName = random.choice(randomAdjective) + ' ' + random.choice(randomNoun)
-    cur.execute(command, (randomName,game_id))
+    cur.execute(command, (randomName,game_id,json.dumps({"missedTimes":[]})))
     loguru.logger.info(f"Created user {randomName}")
     conn.commit()
     cur.execute("SELECT last_insert_rowid()")
