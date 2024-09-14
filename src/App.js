@@ -105,6 +105,7 @@ useEffect(() => {
         )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit</button>
       </div>
         <p>{score}</p>
+        <p>{gameID[1]}</p>
       <div>
       <PlayerCard name="User Info"class="player-card" />
       <div className='col-span-1 ' />
