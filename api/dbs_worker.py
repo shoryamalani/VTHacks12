@@ -7,6 +7,7 @@ import loguru
 load_dotenv()
 import pypika
 import random
+import datetime
 
 def set_up_connection():
     # Path to .env file
@@ -61,7 +62,8 @@ def create_db(DB_PATH):
         score INTEGER,
         liveFocused BOOLEAN,
         reason VARCHAR(255),
-        lastUpdated DATE
+        lastUpdated DATE,
+        active BOOLEAN
     )
     """
     )
@@ -110,8 +112,13 @@ def get_active_games(conn):
     games = cur.fetchall()
     final_games = []
     for game in games:
-        if len(get_game_users(conn, game[0])):
+        if len(get_live_game_users(conn, game[0])):
             final_games.append(game)
+        else:
+            command = "UPDATE games SET active = 0 WHERE id = ?"
+            cur = conn.cursor()
+            cur.execute(command, (game[0],))
+            conn.commit()
     return final_games
 
 
@@ -161,6 +168,22 @@ def get_game_users(conn, game_id):
     loguru.logger.info(f"Game users: {users}")
     return users
 
+def get_live_game_users(conn, game_id):
+    command = "SELECT * FROM players WHERE game_id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (game_id,))
+    users = cur.fetchall()
+    loguru.logger.info(f"Game users: {users}")
+    # if user has not been updated in the last 30 seconds, set active to false
+    for user in users:
+        # user[6] is a date object convert it to seconds since last update
+        seconds = (datetime.datetime.now() - datetime.datetime.strptime(user[6], '%Y-%m-%d %H:%M:%S')).total_seconds()
+        if seconds > 30:
+            command = "UPDATE players SET active = 0 WHERE id = ?"
+            cur = conn.cursor()
+            cur.execute(command, (user[0],))
+    return users
+
 def update_user_score(conn, user_id, score,reason):
     command = "UPDATE players SET score = score + ? WHERE id = ?"
     cur = conn.cursor()
@@ -168,6 +191,8 @@ def update_user_score(conn, user_id, score,reason):
     command = "UPDATE players SET reason = ? WHERE id = ?"
     cur = conn.cursor()
     cur.execute(command, (reason, user_id))
+    # set last updated
+    command = "UPDATE players SET lastUpdated = datetime('now') WHERE id = ?"
     conn.commit()
     return conn
 
