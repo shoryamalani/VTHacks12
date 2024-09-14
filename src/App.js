@@ -110,6 +110,11 @@ console.log(gameState);
         )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit {gameID[1]}</button>
       </div>
       <div className="col-span-3 p-4 grid grid-cols-subgrid bg-blue-300">
+      
+      <div className='col-span-2' />
+      {gameData.map((u, idx) => (
+        <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]===userData[0]} parity={idx%2===0} /> 
+      ))}
       <Webcam
             screenshotFormat="image/jpeg"
             videoConstraints={videoConstraints}
@@ -120,10 +125,6 @@ console.log(gameState);
             mirrored={true}
             style={{zIndex:-1}}
           />
-      <div className='col-span-2' />
-      {gameData.map((u, idx) => (
-        <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]===userData[0]} parity={idx%2===0} /> 
-      ))}
       </div>
     </>
   );
