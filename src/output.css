@@ -734,6 +734,10 @@ video {
   background-image: url('static/nocar.gif');
 }
 
+.bg-\[url\(\'\"\+currentGif\+\"\'\)\] {
+  background-image: url('"+currentGif+"');
+}
+
 .bg-cover {
   background-size: cover;
 }

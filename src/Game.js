@@ -143,7 +143,7 @@ function Game( { gameID, inGameSetter, userData }) {
     });
     }
     return (
-        <div className="bg-[url('static/nocar.gif')] bg-cover bg-center w-full" >
+        <div className={"bg-[url('"+currentGif+"')] bg-cover bg-center w-full"}>
         <div className="col-span-3 p-4 grid grid-cols-subgrid ">
           <button onClick={e => inGameSetter(
             {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
