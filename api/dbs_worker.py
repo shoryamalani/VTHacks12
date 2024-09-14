@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import loguru
 load_dotenv()
 import pypika
+import random
 
 def set_up_connection():
     # Path to .env file
@@ -44,11 +45,36 @@ def create_db(DB_PATH):
             id SERIAL PRIMARY KEY,
             name VARCHAR(255),
             curScore INTEGER,
-            released DATE
+            created DATE
             active DATE
         )
         """
     )
+
+    cur.create(
+    """
+    CREATE TABLE players (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255),
+        score INTEGER
+        liveFocused BOOLEAN
+        reason VARCHAR(255)
+    )
+    """
+    )
+
+    cur.create(
+    """
+    CREATE TABLE rooms (
+        id SERIAL PRIMARY KEY,
+        joinCode VARCHAR(255),
+        name VARCHAR(255),
+        active BOOLEAN
+    )
+    """
+    )
+
+
     # create the version as 0
     cur.execute("INSERT INTO system (id, version) VALUES (1, 0)")
     # commit the changes
@@ -61,6 +87,23 @@ def create_db(DB_PATH):
     return conn
 
 
+def get_game(conn, game_id):
+    command = "SELECT * FROM games WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (game_id,))
+    game = cur.fetchone()
+    return game
+
+def get_game_by_join_code(conn, join_code):
+    command = "SELECT * FROM games WHERE joinCode = ?"
+    cur = conn.cursor()
+    cur.execute(command, (join_code,))
+    game = cur.fetchone()
+    return game
+
+
+
+
 def get_db_version(conn):
     command = "SELECT version FROM system WHERE id = 1"
     cur = conn.cursor()
@@ -68,6 +111,32 @@ def get_db_version(conn):
     version = cur.fetchone()
 
     return version[0]
+
+def get_active_games(conn):
+    command = "SELECT * FROM games WHERE active = 1"
+    cur = conn.cursor()
+    cur.execute(command)
+    games = cur.fetchall()
+    return games
+
+
+def create_game(conn, user_id):
+    command = "INSERT INTO games (name, curScore, created, active) VALUES (?, 0, ?, 1)"
+    cur = conn.cursor()
+    curGameId = random.randint(1000, 9999)
+    while get_active_game(conn, curGameId):
+        curGameId = random.randint(1000, 9999)
+    
+    cur.execute(command, (curGameId, ))
+    conn.commit()
+    return get_game(conn, cur.lastrowid)
+
+def get_active_game(conn, game_id):
+    command = "SELECT * FROM games WHERE id = ? AND active = 1"
+    cur = conn.cursor()
+    cur.execute(command, (game_id,))
+    game = cur.fetchone()
+    return game
 
 def set_db_version(conn, version):
 
@@ -77,9 +146,36 @@ def set_db_version(conn, version):
     conn.commit()
     return conn
 
+def get_user_by_id(conn, user_id):
+    command = "SELECT * FROM players WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (user_id,))
+    user = cur.fetchone()
+    return user
 
+def get_game_users(conn, game_id):
+    command = "SELECT * FROM players WHERE game_id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (game_id,))
+    users = cur.fetchall()
+    return users
 
+def update_user_score(conn, user_id, score,reason):
+    command = "UPDATE players SET score = score + ? WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (score, user_id))
+    command = "UPDATE players SET reason = ? WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (reason, user_id))
+    conn.commit()
+    return conn
 
+def create_user(conn, game_id):
+    command = "INSERT INTO players (name, score, liveFocused, reason) VALUES (?, 0, 0, '')"
+    cur = conn.cursor()
+    cur.execute(command, (game_id,))
+    conn.commit()
+    return get_user_by_id(conn, cur.lastrowid)
 
 def db_init():
     conn = set_up_connection()
