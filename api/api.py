@@ -159,7 +159,7 @@ def upload_video():
                 # get all the other users
 
 
-                gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[2])
+                gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[1])
                 # get highest user score
                 highestScore = -1000
                 highestUser = None
