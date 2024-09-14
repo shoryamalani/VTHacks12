@@ -137,7 +137,7 @@ def upload_video():
                 # get all the other users
                 gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[1])
                 # for each user that is not focused add one point
-                bonus = 0
+                bonus = 1 
                 for gameUser in gameUsers:
                     if gameUser[0] != user_id:
                         if gameUser[4] == False:
