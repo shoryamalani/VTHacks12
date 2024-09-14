@@ -104,7 +104,15 @@ useEffect(() => {
           {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
         )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit</button>
       </div>
-
+        <p>{score}</p>
+      <div>
+      <PlayerCard name="User Info"class="player-card" />
+      <div className='col-span-1 ' />
+      <PlayerCard name="Saucy Asparagus" class="saucy-asparagus" />
+      <PlayerCard name="Confused Carrot" />
+      <div className='col-span-1' />
+      <PlayerCard name="Wacky Watermelon" />
+      </div>
       <Webcam
             screenshotFormat="image/jpeg"
             videoConstraints={videoConstraints}
@@ -114,12 +122,6 @@ useEffect(() => {
             ref={webcamRef}
             mirrored={true}
           /> 
-      <PlayerCard name="User Info"class="player-card" />
-      <div className='col-span-1 ' />
-      <PlayerCard name="Saucy Asparagus" class="saucy-asparagus" />
-      <PlayerCard name="Confused Carrot" />
-      <div className='col-span-1' />
-      <PlayerCard name="Wacky Watermelon" />
       {/* {gameState.users.map((u) => (
         <PlayerCard name={u} /> // TODO Generate player stat cards from gamestate users
       ))} */}
