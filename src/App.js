@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './output.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Webcam from "react-webcam";
 function PlayerCard({ name }) {
   return (
@@ -11,7 +11,7 @@ function PlayerCard({ name }) {
   );
 }
 
-function Game( { gameID, inGameSetter }) {
+function Game( { gameID, inGameSetter, userData }) {
   const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const videoConstraints = {
       width: 640,
@@ -31,6 +31,43 @@ function Game( { gameID, inGameSetter }) {
   //       setGameState(data);
   //     });
   // }, []);
+  const capture = useCallback(() => {
+  var imageSrc = webcamRef.current.getScreenshot();
+  console.log(imageSrc);
+  setImg(imageSrc);
+  setImgAll([...imgAll, imageSrc]);
+}, [webcamRef, setImg, imgAll, setImgAll]);
+
+  
+useEffect(() => {
+  const interval = setInterval(() => {
+      capture();
+      capture();
+      capture();
+      capture();
+      
+      console.log(imgAll);
+      if(imgAll.length>3){
+          // upload these four images
+          var url = '/api/uploadFrames';
+          fetch(url, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                  images:[imgAll[0], imgAll[1], imgAll[2], imgAll[3]],
+                  user_id: userData[0],
+              })
+          })
+
+          setImgAll([]);
+          // set timeout to do nothing for a second
+          
+      }
+  }, 250);
+  return () => clearInterval(interval);
+}, [imgAll,img]);
 
   return (
     <>
@@ -122,13 +159,13 @@ function GameMenu({ inGameSetter }) {
 }
 
 function GameManager () {
-  const [inGame, setInGame] = useState({playing: false, game: 0, player: "new"});
+  const [inGame, setInGame] = useState({playing: false, game: 0, player: []});
   // useEffect(() => {
   //   fetch('https://gaze.shoryamalani.com/api/joinGame')
   // }, []);
 
   if (inGame.playing) {
-    return <Game gameID={inGame.game} inGameSetter={setInGame}/>
+    return <Game gameID={inGame.game} inGameSetter={setInGame} userData={inGame.player}/>
   }
   else {
     return <GameMenu inGameSetter={setInGame}/>
