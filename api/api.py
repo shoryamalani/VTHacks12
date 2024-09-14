@@ -15,7 +15,7 @@ import gazeDetector
 import mediapipe as mp
 import numpy as np
 import cv2
-app = Flask(__name__, static_folder='../build', static_url_path='/')
+app = Flask(__name__, static_folder='../public', static_url_path='/')
 SESSION_TYPE = 'filesystem'
 app.config.from_object(__name__)
 
