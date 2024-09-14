@@ -115,8 +115,6 @@ console.log(gameState);
       {gameData.map((u, idx) => (
         <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]===userData[0]} parity={idx%2===0} /> 
       ))}
-      
-      </div>
       <Webcam
             screenshotFormat="image/jpeg"
             videoConstraints={videoConstraints}
@@ -127,6 +125,8 @@ console.log(gameState);
             mirrored={true}
             style={{zIndex:-1}}
           />
+      </div>
+      
     </>
   );
 }
