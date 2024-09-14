@@ -706,6 +706,18 @@ video {
   background-color: rgb(127 29 29 / var(--tw-bg-opacity));
 }
 
+.bg-\[url\(\'leftCrash\.gif\'\)\] {
+  background-image: url('leftCrash.gif');
+}
+
+.bg-\[url\(\'nocar\.gif\'\)\] {
+  background-image: url('nocar.gif');
+}
+
+.bg-\[url\(\'rightCrash\.gif\'\)\] {
+  background-image: url('rightCrash.gif');
+}
+
 .bg-\[url\(\'static\/dither\.png\'\)\] {
   background-image: url('static/dither.png');
 }
@@ -714,20 +726,12 @@ video {
   background-image: url('static/dither_green.png');
 }
 
-.bg-\[url\(\'static\/leftCrash\.gif\'\)\] {
-  background-image: url('static/leftCrash.gif');
-}
-
 .bg-\[url\(\'static\/logo\.jpg\'\)\] {
   background-image: url('static/logo.jpg');
 }
 
 .bg-\[url\(\'static\/nocar\.gif\'\)\] {
   background-image: url('static/nocar.gif');
-}
-
-.bg-\[url\(\'static\/rightCrash\.gif\'\)\] {
-  background-image: url('static/rightCrash.gif');
 }
 
 .bg-cover {

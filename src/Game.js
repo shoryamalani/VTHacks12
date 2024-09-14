@@ -8,7 +8,7 @@ function Game( { gameID, inGameSetter, userData }) {
     const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const [gameData, setGameData] = useState([]); // all the users
     const [curUserData, setUserData] = useState(userData);
-    const [currentGif, setCurrentGif] = useState("bg-[url('static/nocar.gif')]");
+    const [currentGif, setCurrentGif] = useState("nocar.gif");
     const [action, setAction] = useState(null);
 
       const videoConstraints = {
@@ -33,11 +33,11 @@ function Game( { gameID, inGameSetter, userData }) {
     useEffect(() => {
         var urls = ['leftCrash.gif', 'rightCrash.gif', 'nocar.gif'];
         if(action == "left"){
-            setCurrentGif("bg-[url('static/leftCrash.gif')]");
+            setCurrentGif("bg-[url('leftCrash.gif')]");
         } else if(action == "right"){
-            setCurrentGif("bg-[url('static/rightCrash.gif')]");
+            setCurrentGif("bg-[url('rightCrash.gif')]");
         } else if(action == "nocar"){
-            setCurrentGif("bg-[url('static/nocar.gif')]");
+            setCurrentGif("bg-[url('nocar.gif')]");
 
         }
         console.log(action);
@@ -143,7 +143,7 @@ function Game( { gameID, inGameSetter, userData }) {
     });
     }
     return (
-      <div className={"bg-cover bg-center w-full" + {currentGif}} >
+        <div className="bg-[url('static/nocar.gif')] bg-cover bg-center w-full" >
         <div className="col-span-3 p-4 grid grid-cols-subgrid ">
           <button onClick={e => inGameSetter(
             {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
