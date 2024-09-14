@@ -170,6 +170,8 @@ def upload_video():
                             highestUser = gameUser
                 if highestUser != None:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), highestUser[0], random.choice([-1]),reason,True)
+                    loguru.logger.warning(f"User {highestUser[0]} has been meddled with")
+                    
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([2]),reason,True) 
                 else:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
