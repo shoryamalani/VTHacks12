@@ -83,7 +83,7 @@ function Game( { gameID, inGameSetter, userData }) {
         }
     }, 250);
     return () => clearInterval(interval);
-  }, [imgAll,img]);
+  }, [imgAll,img,action]);
   
   useEffect(() => {
     const interval = setInterval(() => {
