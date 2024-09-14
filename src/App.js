@@ -118,7 +118,7 @@ console.log(gameState);
             width={480}
             ref={webcamRef}
             mirrored={true}
-            show={false} 
+        style={{display: 'none'}}
           />
       <div className='col-span-2' />
       {gameData.map((u, idx) => (
