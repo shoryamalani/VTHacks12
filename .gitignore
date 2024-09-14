@@ -9,3 +9,4 @@ yarn.lock
 *.nginx
 .venv
 __pycache__
+*.sqlite3
