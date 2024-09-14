@@ -110,7 +110,7 @@ def get_active_games(conn):
     games = cur.fetchall()
     final_games = []
     for game in games:
-        if get_game_users(conn, game[0]):
+        if len(get_game_users(conn, game[0])):
             final_games.append(game)
     return games
 
