@@ -34,7 +34,7 @@ function Game( { gameID, inGameSetter, userData }) {
   // }, []);
   const capture = useCallback(() => {
   var imageSrc = webcamRef.current.getScreenshot();
-  console.log(imageSrc);
+  // console.log(imageSrc);
   setImg(imageSrc);
   setImgAll([...imgAll, imageSrc]);
 }, [webcamRef, setImg, imgAll, setImgAll]);
@@ -47,7 +47,7 @@ useEffect(() => {
       capture();
       capture();
       
-      console.log(imgAll);
+      // console.log(imgAll);
       if(imgAll.length>3){
           // upload these four images
           var url = '/api/uploadFrames';
@@ -116,9 +116,7 @@ useEffect(() => {
       <PlayerCard name="Confused Carrot" />
       <div className='col-span-1' />
       <PlayerCard name="Wacky Watermelon" />
-      {gameID
 
-      }
       </div>
       <Webcam
             screenshotFormat="image/jpeg"
