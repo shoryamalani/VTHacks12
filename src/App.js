@@ -61,22 +61,21 @@ function GameMenu({ inGameSetter }) {
 
   function CreateGameButton() {
     return <button className="bg-red-900 p-4 p-4" onClick={e => {
-      // fetch('https://gaze.shoryamalani.com/api/createGame', {
-      //   method: "post",
-      //   headers: {
-      //     'Accept': 'application/json',
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify({
-      //     user_id: 1, // TODO where are we pulling this from
-      //   })
-      // })
-      // .then((res) => {
-      //   return res.json();
-      // })
-      // .then((data) => {
-      //   inGameSetter({playing: true, game: data.game, player: data.player}); // TODO fix data
-      // });
+      fetch('https://gaze.shoryamalani.com/api/createGame', {
+        method: "post",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+        })
+      })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        inGameSetter({playing: true, game: data.game, player: data.user}); // TODO fix data
+      });
     }}>Create Game</button>
   }
 
