@@ -1,3 +1,10 @@
+from flask import Flask, request, jsonify
+import mediapipe as mp
+import numpy as np
+import cv2
+
+app = Flask(__name__)
+
 import time
 from flask import Flask, jsonify, request , redirect, url_for, request, session
 import dbs_worker
@@ -54,32 +61,27 @@ def get_active_games():
 
 
 
-@app.route('/upload', methods=['POST'])
-def upload_video():
-    images = []
-    # get the user id from the json
-    user_id = request.json['user_id']
-    for key in request.files:
-        video_chunk = request.files[key]
-        video_data = video_chunk.read()
-from flask import Flask, request, jsonify
-import mediapipe as mp
-import numpy as np
-import cv2
-
-app = Flask(__name__)
+# @app.route('/api/uploadFrames', methods=['POST'])
+# def upload_video():
+#     images = []
+#     # get the user id from the json
+#     user_id = request.json['user_id']
+#     for key in request.files:
+#         video_chunk = request.files[key]
+#         video_data = video_chunk.read()
 
 # Initialize the MediaPipe Image object handler
 mp_image = mp.Image
-
-@app.route('/upload', methods=['POST'])
+import base64
+@app.route('/api/uploadFrames', methods=['POST'])
 def upload_video():
     mp_images = []
-    user_id = request.form['user_id']
+    user_id = request.json['user_id']
+    images = request.json['images']
 
-    for key in request.files:
-        video_chunk = request.files[key]
-        video_data = video_chunk.read()
+    for val in images:
+        base64_data = val.split(',')[1]  # Remove the data:image/jpeg;base64, part
+        video_data = base64.b64decode(base64_data)
 
         # Convert video chunk to OpenCV image
         np_img = np.frombuffer(video_data, np.uint8)
@@ -88,14 +90,20 @@ def upload_video():
         # Convert OpenCV image to MediaPipe Image object
         mp_image_obj = mp.Image(image_format=mp.ImageFormat.SRGB, data=cv2_image)
         mp_images.append(mp_image_obj)
+        # save the image
+        cv2.imwrite(f"images/{user_id}_{time.time()}.jpg", cv2_image)
+    
     
     val,reason = gazeDetector.getValueFromManyImages(mp_images)
-    dbs_worker.get_user_by_id(conn, user_id)
+    user = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(), user_id)
+    loguru.logger.info(f"User {user_id} has a score of {val}")
     if val == False:
         # reduce score by 3
         # set active to false
         # set reason
-        dbs_worker.update_user_score(conn, user_id, -3)
+        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason)
+    else:
+        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -3,reason)
     # Now you have a list of MediaPipe Image objects
     # You can process these images using MediaPipe's tools
 
@@ -104,20 +112,20 @@ def upload_video():
 
 
 
-@app.route('/api/getActiveGames', methods=['GET'])
-def get_active_games():
-    # get the active games
-    games = dbs_worker.get_active_games(conn)
-    return jsonify(games)
+# @app.route('/api/getActiveGames', methods=['GET'])
+# def get_active_games():
+#     # get the active games
+#     games = dbs_worker.get_active_games(conn)
+#     return jsonify(games)
 
 
-@app.route('/api/createGame', methods=['POST'])
+@app.route('/api/createGame')
 def create_game():
     # get the user id
-    user_id = request.json['user_id']
     # create the game
-    game = dbs_worker.create_game(conn, user_id)
-    return jsonify(game)
+    game = dbs_worker.create_game(dbs_worker.set_up_connection())
+    user = dbs_worker.create_user(dbs_worker.set_up_connection(), game[1])
+    return jsonify({"game":game,"user":user}), 200
 
 
 
@@ -126,27 +134,29 @@ def join_game():
     # get the game id
     joinCode = request.json['joinCode']
     # get game
-    game = dbs_worker.get_game_by_join_code(conn, joinCode)
+    game = dbs_worker.get_game_by_name(dbs_worker.set_up_connection(), joinCode)
     # add user
-    user = dbs_worker.create_user(conn, game['id'])
+    user = dbs_worker.create_user(dbs_worker.set_up_connection(), game[1])
     # check if the game is active
-    if game['active'] == 0:
+    if game[3] == 0:
         return jsonify({'error': 'game is not active'}), 400
     
-    return jsonify(user)
+    return jsonify({"game":game,"user":user})
 
 
-@app.route('/api/getGameData', methods=['GET'])
+@app.route('/api/getGameData', methods=['POST'])    
 def get_game_data():
     # get the game id
-    game_id = request.json['game_id']
+    game_id = request.json['gameId']
+    userId = request.json['userId']
     # get the game data
-    gameUsers = dbs_worker.get_game_users(conn, game_id)
+    gameUsers = dbs_worker.get_game_users(dbs_worker.set_up_connection(), game_id)
     score = 0
     userData = {}
     for user in gameUsers:
-        score += user['score']
-        userData[user['id']] = user
+        score += user[3]
+        userData[user[0]] = user
+    return jsonify({"gameUsers":gameUsers,"score":score})
 
 
 

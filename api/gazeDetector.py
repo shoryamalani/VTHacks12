@@ -117,10 +117,6 @@ def plot_face_blendshapes_bar_graph(face_blendshapes):
 import cv2
 # from google.colab.patches import cv2_imshow
 
-img = cv2.imread("3.jpg")
-
-# %%
-# %pip install loguru
 
 # %%
 # Import the necessary modules.
@@ -145,17 +141,6 @@ detector = vision.FaceLandmarker.create_from_options(options)
 
 logger.info("Created FaceLandmarker object.")
 
-
-name = "5.jpg"
-# Load the input image.
-image = mp.Image.create_from_file(name)
-
-logger.info("Loaded input image.")
-
-# Load the image with OpenCV
-img = cv2.imread(name)
-
-logger.info("Loaded image with OpenCV.")
 
 def gaze(image):
     # The eye landmarks correspond to the following points:
@@ -360,6 +345,7 @@ def getValueFromManyImages(images):
     
         # average the values
         final_dict = {}
+        logger.info("Rolling average"+str(rolling_average))
         for key in rolling_average[0].keys():
             final_dict[key] = sum([x[key] for x in rolling_average]) / len(rolling_average)
         print(final_dict)

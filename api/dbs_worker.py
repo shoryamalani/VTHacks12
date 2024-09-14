@@ -33,7 +33,7 @@ def create_db(DB_PATH):
     cur.execute(
         """
         CREATE TABLE system (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             version INTEGER
         )
         """
@@ -42,34 +42,26 @@ def create_db(DB_PATH):
     cur.execute(
         """
         CREATE TABLE games (
-            id SERIAL PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name VARCHAR(255),
             curScore INTEGER,
-            created DATE
-            active DATE
+            created DATE,
+            active BOOLEAN,
+            lastUpdated DATE
         )
         """
     )
 
-    cur.create(
+    cur.execute(
     """
     CREATE TABLE players (
-        id SERIAL PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        game_id VARCHAR(255),
         name VARCHAR(255),
-        score INTEGER
-        liveFocused BOOLEAN
-        reason VARCHAR(255)
-    )
-    """
-    )
-
-    cur.create(
-    """
-    CREATE TABLE rooms (
-        id SERIAL PRIMARY KEY,
-        joinCode VARCHAR(255),
-        name VARCHAR(255),
-        active BOOLEAN
+        score INTEGER,
+        liveFocused BOOLEAN,
+        reason VARCHAR(255),
+        lastUpdated DATE
     )
     """
     )
@@ -94,13 +86,12 @@ def get_game(conn, game_id):
     game = cur.fetchone()
     return game
 
-def get_game_by_join_code(conn, join_code):
-    command = "SELECT * FROM games WHERE joinCode = ?"
+def get_game_by_name(conn, game_name):
+    command = "SELECT * FROM games WHERE name = ?"
     cur = conn.cursor()
-    cur.execute(command, (join_code,))
+    cur.execute(command, (game_name,))
     game = cur.fetchone()
     return game
-
 
 
 
@@ -120,16 +111,21 @@ def get_active_games(conn):
     return games
 
 
-def create_game(conn, user_id):
-    command = "INSERT INTO games (name, curScore, created, active) VALUES (?, 0, ?, 1)"
+
+
+def create_game(conn):
     cur = conn.cursor()
-    curGameId = random.randint(1000, 9999)
-    while get_active_game(conn, curGameId):
-        curGameId = random.randint(1000, 9999)
+    #random 5 letter letters and numbers
+    randomName = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=5)).upper()
+    while get_active_game(conn, randomName):
+        randomName = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=5)).upper()
     
-    cur.execute(command, (curGameId, ))
+    command = f"INSERT INTO games (name, curScore, created, active) VALUES ('{randomName}', 0, datetime('now'), 1)"
+    print(randomName)
+    cur.execute(command)
     conn.commit()
-    return get_game(conn, cur.lastrowid)
+    print(get_game_by_name(conn, randomName))
+    return get_game_by_name(conn, randomName)
 
 def get_active_game(conn, game_id):
     command = "SELECT * FROM games WHERE id = ? AND active = 1"
@@ -158,6 +154,7 @@ def get_game_users(conn, game_id):
     cur = conn.cursor()
     cur.execute(command, (game_id,))
     users = cur.fetchall()
+    loguru.logger.info(f"Game users: {users}")
     return users
 
 def update_user_score(conn, user_id, score,reason):
@@ -171,11 +168,21 @@ def update_user_score(conn, user_id, score,reason):
     return conn
 
 def create_user(conn, game_id):
-    command = "INSERT INTO players (name, score, liveFocused, reason) VALUES (?, 0, 0, '')"
+    command = "INSERT INTO players (name, score, liveFocused, reason,lastUpdated,game_id) VALUES (?, 0, 0, '', datetime('now'),?)"
     cur = conn.cursor()
-    cur.execute(command, (game_id,))
+    randomAdjective = ['Happy', 'Sad', 'Angry', 'Excited', 'Bored', 'Tired', 'Sleepy', 'Hungry', 'Thirsty']
+    randomNoun = ['Dog', 'Cat', 'Bird', 'Fish', 'Elephant', 'Lion', 'Tiger', 'Bear', 'Monkey', 'Giraffe']
+    randomName = random.choice(randomAdjective) + ' ' + random.choice(randomNoun)
+    cur.execute(command, (randomName,game_id))
+    loguru.logger.info(f"Created user {randomName}")
     conn.commit()
-    return get_user_by_id(conn, cur.lastrowid)
+    cur.execute("SELECT last_insert_rowid()")
+    user_id = cur.fetchone()[0]
+    loguru.logger.warning(f"User { user_id} created")
+
+    conn.close()
+    # loguru.logger.info(f"User {get_user_by_id(set_up_connection(), cur.lastrowid +1)} created")
+    return get_user_by_id(set_up_connection(), user_id)
 
 def db_init():
     conn = set_up_connection()
