@@ -1,5 +1,5 @@
 {
-  "name": "model_un_organization_scripts",
+  "name": "gaze",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,6 +24,7 @@
     "react-google-login": "^5.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-webcam": "^7.2.0",
     "styled-components": "^5.3.6"
   },
   "scripts": {

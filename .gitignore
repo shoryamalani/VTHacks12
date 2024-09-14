@@ -1,0 +1,11 @@
+node_modules
+.env
+*.pem
+*.log
+package-lock.json
+yarn.lock
+*.conf
+*.service
+*.nginx
+.venv
+__pycache__
