@@ -180,7 +180,7 @@ function GameMenu({ inGameSetter }) {
               return res.json();
             })
             .then((data) => {
-              inGameSetter({playing: true, game: data.game, player: data.player}); // TODO fix data
+              inGameSetter({playing: true, game: data.game, player: data.user}); // TODO fix data
             });
           }}>Enter Game {g[1]}</button>
         ))}
