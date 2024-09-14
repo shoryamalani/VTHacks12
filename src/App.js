@@ -129,9 +129,9 @@ console.log(gameState);
             ref={webcamRef}
             mirrored={true}
           /> 
-      {/* {gameState.game.gameUsers.map((u) => (
+      {gameData.gameUsers.map((u) => (
         <PlayerCard name={u[2]} /> // TODO Generate player stat cards from gamestate users
-      ))} */}
+      ))}
     </>
   );
 }
