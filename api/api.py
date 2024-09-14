@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import mediapipe as mp
 import numpy as np
 import cv2
-
+import random
 app = Flask(__name__)
 
 import time
@@ -16,6 +16,10 @@ import mediapipe as mp
 import numpy as np
 import cv2
 app = Flask(__name__, static_folder='../public', static_url_path='/')
+
+powerUpLine = [10,250,400,575,800,1000]
+powerUps = ["Devious Meddling","Perfectionist","Gotta PEE!", "Attention Grabbing"]
+powerUpTiming = [300,180,300,180]
 SESSION_TYPE = 'filesystem'
 app.config.from_object(__name__)
 
@@ -61,6 +65,21 @@ def get_active_games():
 
 
 
+@app.route('/api/activatePowerup', methods=['POST'])
+def activate_powerup():
+    userId = request.json['userId']
+    userData = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(),userId)
+    nextPowerUp = 0
+    if userData[11] in powerUpLine:
+        nextPowerUp = powerUpLine[powerUpLine.index(userData[11])+1]
+    else:
+        nextPowerUp = userData[11] + 300
+
+
+    dbs_worker.update_user_power_up(dbs_worker.set_up_connection(),userId,userData[8],True,powerUpTiming[powerUps.index(userData[8])],nextPowerUp)
+    return jsonify({'message': 'Powerup activated'}), 200
+    
+
 # @app.route('/api/uploadFrames', methods=['POST'])
 # def upload_video():
 #     images = []
@@ -103,7 +122,7 @@ def upload_video():
         # set reason
         dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason)
     else:
-        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -3,reason)
+        dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -1,reason)
     # Now you have a list of MediaPipe Image objects
     # You can process these images using MediaPipe's tools
 
@@ -155,8 +174,17 @@ def get_game_data():
     userData = {}
     for user in gameUsers:
         score += user[3]
-        userData[user[0]] = user
-    return jsonify({"gameUsers":gameUsers,"score":score})
+    
+    userData = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(),userId)
+    if userData[3] >= userData[11]:
+        powerUpAvailable = random.choice(powerUps)
+        powerUpTime = powerUpTiming[powerUps.index(powerUpAvailable)]
+        if userData[11] in powerUpLine:
+            nextPowerUp = powerUpLine[powerUpLine.index(userData[11])+1]
+        else:
+            nextPowerUp = userData[11] + 300
+        dbs_worker.update_user_power_up(dbs_worker.set_up_connection(),userId,powerUpAvailable,False,powerUpTime,nextPowerUp)
+    return jsonify({"gameUsers":gameUsers,"score":score,"userData":userData})
 
 
 
@@ -165,5 +193,7 @@ def get_game_data():
 def server_error(e):
     print(e)
     return jsonify({'error': 'bad request'}), 400
+
+
 if __name__ == "__main__":
     app.run(port=5003, debug=True)

@@ -63,7 +63,12 @@ def create_db(DB_PATH):
         liveFocused BOOLEAN,
         reason VARCHAR(255),
         lastUpdated DATE,
-        active BOOLEAN
+        active BOOLEAN,
+        powerUp VARCHAR(255),
+        isPowerUpActive BOOLEAN,
+        powerUpExpiry DATE,
+        nextPowerUpVal INTEGER,
+        activeDebuff VARCHAR(255),
     )
     """
     )
@@ -165,7 +170,7 @@ def get_game_users(conn, game_id):
     cur = conn.cursor()
     cur.execute(command, (game_id,))
     users = cur.fetchall()
-    loguru.logger.info(f"Game users: {users}")
+    # loguru.logger.info(f"Game users: {users}")
     return users
 
 def get_live_game_users(conn, game_id):
@@ -200,7 +205,7 @@ def update_user_score(conn, user_id, score,reason):
     return conn
 
 def create_user(conn, game_id):
-    command = "INSERT INTO players (name, score, liveFocused, reason,lastUpdated,game_id,active) VALUES (?, 0, 0, '', datetime('now'),?,1)"
+    command = "INSERT INTO players (name, score, liveFocused, reason,lastUpdated,game_id,active,nextPowerUpVal) VALUES (?, 0, 0, '', datetime('now'),?,1,10)"
     cur = conn.cursor()
     randomAdjective = ['Happy', 'Sad', 'Angry', 'Excited', 'Bored', 'Tired', 'Sleepy', 'Hungry', 'Thirsty']
     randomNoun = ['Dog', 'Cat', 'Bird', 'Fish', 'Elephant', 'Lion', 'Tiger', 'Bear', 'Monkey', 'Giraffe']
@@ -215,6 +220,18 @@ def create_user(conn, game_id):
     conn.close()
     # loguru.logger.info(f"User {get_user_by_id(set_up_connection(), cur.lastrowid +1)} created")
     return get_user_by_id(set_up_connection(), user_id)
+
+def update_user_power_up(conn, user_id, powerUpAvailable, powerUpActive, powerUpExpiry, nextPowerUpVal):
+    command = "UPDATE players SET powerUp = ?, isPowerUpActive = ?, nextPowerUpVal = ? WHERE id = ?"
+    cur = conn.cursor()
+    cur.execute(command, (powerUpAvailable, powerUpActive, nextPowerUpVal, user_id))
+    if powerUpActive:
+        command = "UPDATE players SET powerUpExpiry = ? WHERE id = ?"
+        cur = conn.cursor()
+        finalTime = datetime.datetime.now() + datetime.timedelta(seconds=powerUpExpiry) 
+        cur.execute(command, (finalTime, user_id))
+    conn.commit()
+    return conn
 
 def db_init():
     conn = set_up_connection()

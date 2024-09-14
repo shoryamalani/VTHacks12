@@ -345,10 +345,10 @@ def getValueFromManyImages(images):
     
         # average the values
         final_dict = {}
-        logger.info("Rolling average"+str(rolling_average))
+        # logger.info("Rolling average"+str(rolling_average))
         for key in rolling_average[0].keys():
             final_dict[key] = sum([x[key] for x in rolling_average]) / len(rolling_average)
-        print(final_dict)
+        # print(final_dict)
         rolling_average = []
         val, reason = calculate_meaning_from_average(final_dict)
         return val, reason
