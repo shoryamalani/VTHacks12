@@ -184,6 +184,7 @@ def get_live_game_users(conn, game_id):
             command = "UPDATE players SET active = 0 WHERE id = ?"
             cur = conn.cursor()
             cur.execute(command, (user[0],))
+            conn.commit()
     return users
 
 def update_user_score(conn, user_id, score,reason):
