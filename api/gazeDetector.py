@@ -224,11 +224,11 @@ def calculate_meaning_from_average(rolling_average):
         fUp = True
         reason = "Looking Up"
         logger.info("Looking Up")
-    elif yaw > 800:
+    elif yaw < -800:
         fLeft = True
         reason = "Looking Left"
         logger.info("Looking Left")
-    elif yaw < -800:
+    elif yaw > 800:
         fRight = True
         reason = "Looking Right"
         logger.info("Looking Right")

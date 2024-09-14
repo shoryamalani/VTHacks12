@@ -2,9 +2,9 @@ import logo from './logo.svg';
 import './output.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Webcam from "react-webcam";
-function PlayerCard({ name, score,reason, isYou }) {
+function PlayerCard({ name, score, reason, isYou, parity }) {
   return (
-    <div  className={" player-card col-span-1  p-4 m-2 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)] " +(isYou ? 'bg-green-500':'bg-blue-500')}>
+    <div  className={" player-card p-4 m-2 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)] " +(parity ? 'col-start-1 ' : 'col-start-3 ') +(isYou ? 'bg-green-500 ':'bg-blue-500 ')+ (reason==="" ? 'text-slate-200 ':'text-red-800 ')}>
       <div>{name}</div>
       <div>Score: {score}</div>
       <div>Reason: {reason}</div>
@@ -104,24 +104,12 @@ console.log(gameState);
 },[]);
   return (
     <>
-      <div className="col-span-3 p-4 grid-cols-subgrid ">
+      <div className="col-span-3 p-4 grid grid-cols-subgrid ">
         <button onClick={e => inGameSetter(
           {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
         )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit {gameID[1]}</button>
       </div>
-        <div>
-        {/* <p>{score}</p> */}
-        
-        </div>
-      <div>
-      <PlayerCard name="User Info"class="player-card" />
-      <div className='col-span-1 ' />
-      <PlayerCard name="Saucy Asparagus" class="saucy-asparagus" />
-      <PlayerCard name="Confused Carrot" />
-      <div className='col-span-1' />
-      <PlayerCard name="Wacky Watermelon" />
-
-      </div>
+      <div className="col-span-3 p-4 grid grid-cols-subgrid bg-blue-300">
       <Webcam
             screenshotFormat="image/jpeg"
             videoConstraints={videoConstraints}
@@ -130,13 +118,13 @@ console.log(gameState);
             width={480}
             ref={webcamRef}
             mirrored={true}
-          /> 
-      {gameData.map((u) => (
-        <>
-        
-        <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]==userData[0]} /> 
-        </>
+            show={false} 
+          />
+      <div className='col-span-2' />
+      {gameData.map((u, idx) => (
+        <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]===userData[0]} parity={idx%2===0} /> 
       ))}
+      </div>
     </>
   );
 }
