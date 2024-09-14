@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './output.css';
-import { useState, useEffect } from 'react';
-
+import { useState, useEffect, useRef } from 'react';
+import Webcam from "react-webcam";
 function PlayerCard({ name }) {
   return (
     <div className=" player-card col-span-1 bg-blue-500 p-4 m-2 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)] ">
@@ -13,7 +13,15 @@ function PlayerCard({ name }) {
 
 function Game( { gameID, inGameSetter }) {
   const [gameState, setGameState] = useState(gameID); //TODO more state info?
+    const videoConstraints = {
+      width: 640,
+      height: 480,
+      facingMode: "user",
+    };
 
+  const webcamRef = useRef(null);
+  const [img, setImg] = useState(null);
+  const [imgAll, setImgAll] = useState([]);
   // useEffect(() => {
   //   fetch('https://gaze.shoryamalani.com/api/getGameData')
   //     .then((res) => {
@@ -31,7 +39,15 @@ function Game( { gameID, inGameSetter }) {
           {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
         )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit</button>
       </div>
-      
+      <Webcam
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+            audio={false}
+            height={640}
+            width={480}
+            ref={webcamRef}
+            mirrored={true}
+          /> 
       <PlayerCard name="User Info"class="player-card" />
       <div className='col-span-1 ' />
       <PlayerCard name="Saucy Asparagus" class="saucy-asparagus" />

@@ -200,7 +200,7 @@ def update_user_score(conn, user_id, score,reason):
     return conn
 
 def create_user(conn, game_id):
-    command = "INSERT INTO players (name, score, liveFocused, reason,lastUpdated,game_id) VALUES (?, 0, 0, '', datetime('now'),?)"
+    command = "INSERT INTO players (name, score, liveFocused, reason,lastUpdated,game_id,active) VALUES (?, 0, 0, '', datetime('now'),?,1)"
     cur = conn.cursor()
     randomAdjective = ['Happy', 'Sad', 'Angry', 'Excited', 'Bored', 'Tired', 'Sleepy', 'Hungry', 'Thirsty']
     randomNoun = ['Dog', 'Cat', 'Bird', 'Fish', 'Elephant', 'Lion', 'Tiger', 'Bear', 'Monkey', 'Giraffe']
