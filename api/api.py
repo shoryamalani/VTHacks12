@@ -163,9 +163,8 @@ def upload_video():
                 for gameUser in gameUsers:
                     if gameUser[0] != user_id:
                         if gameUser[3] > highestScore:
-                            if gameUser[0] != user_id:
-                                highestScore = gameUser[3]
-                                user = gameUser
+                            highestScore = gameUser[3]
+                            user = gameUser
                 if user != None:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user[0], random.choice([0,0,0,0,-1]),reason,True)
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([1,1,1,1,2]),reason,True) 
@@ -180,7 +179,7 @@ def upload_video():
     else:
         
         if user[9] == True and datetime.datetime.strptime(user[10], '%Y-%m-%d %H:%M:%S.%f') > datetime.datetime.now():
-                if user[8] == "gotta PEE!":
+                if user[8] == "Gotta PEE!":
                     print(" GOTTA PEE IS ACTIVE")
                     finalJson = json.loads(user[13])
                     finalJson['missedTimes'].append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
