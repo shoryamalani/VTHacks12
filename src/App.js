@@ -109,7 +109,7 @@ console.log(gameState);
           {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
         )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit {gameID[1]}</button>
       </div>
-      <div className="col-span-3 p-4 grid grid-cols-subgrid bg-blue-300">
+      <div className="col-span-3 p-4 grid grid-cols-subgrid bg-[url('static/nocar.gif')]">
       
       <div className='col-span-2' />
       {gameData.map((u, idx) => (
