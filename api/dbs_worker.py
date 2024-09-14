@@ -184,9 +184,9 @@ def get_live_game_users(conn, game_id):
     # if user has not been updated in the last 30 seconds, set active to false
     for user in users:
         # user[6] is a date object convert it to seconds since last update
-        seconds = abs((datetime.datetime.strptime(user[6], '%Y-%m-%d %H:%M:%S') - datetime.datetime.now() ).total_seconds())
-        loguru.logger.info(f"User {user[0]} last updated {user[6]}")
-        loguru.logger.info(f"User {user[0]} last updated {seconds} seconds ago")
+        seconds = abs((datetime.datetime.strptime(user[6], '%Y-%m-%d %H:%M:%S') - datetime.datetime.utcnow() ).total_seconds())
+        loguru.logger.error(f"User {user[0]} last updated {user[6]}")
+        loguru.logger.error(f"User {user[0]} last updated {seconds} seconds ago clocking in at {(datetime.datetime.strptime(user[6], '%Y-%m-%d %H:%M:%S') )}")
         if seconds > 30:
             command = "UPDATE players SET active = 0 WHERE id = ?"
             cur = conn.cursor()

@@ -116,18 +116,24 @@ def upload_video():
     
     val,reason = gazeDetector.getValueFromManyImages(mp_images)
     action = "none"
+    loguru.logger.error(f"User {val} not found")
+
     user = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(), user_id)
-    if val == False:
-        jsonVal = json.loads(user[13])
-        jsonVal['failRow'] += 1
+    jsonVal = json.loads(user[13])
+    if val == True:
+        jsonVal['failRow'] = jsonVal['failRow'] + 1
+        loguru.logger.error(jsonVal)
     else:
         jsonVal = json.loads(user[13])
         if jsonVal['failRow'] > 10:
             action = "respawn"
         jsonVal['failRow'] = 0
+    
+    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 0,reason,False,jsonVal)
     if user == None:
         loguru.logger.error(f"User {user_id} not found")
     loguru.logger.info(f"User {user_id} has a score of {val}")
+    user = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(), user_id)
     if val == False:
         # reduce score by 3
         # set active to false
