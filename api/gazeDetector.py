@@ -276,7 +276,7 @@ def calculate_meaning_from_average(rolling_average):
     
     if eyeBlinkLeft + eyeBlinkRight > 0.8:
         eBlinking = True
-        reason = "Blinking"
+        reason = "Blinking/Looking Down"
         logger.info("Blinking")
     distracted = False
     if fUp or fDown or fLeft or fRight or eDown or eUp or eLeft or eRight or eBlinking:

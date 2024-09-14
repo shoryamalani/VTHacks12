@@ -2,9 +2,9 @@ import logo from './logo.svg';
 import './output.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Webcam from "react-webcam";
-function PlayerCard({ name, score,reason }) {
+function PlayerCard({ name, score,reason, isYou }) {
   return (
-    <div className=" player-card col-span-1 bg-blue-500 p-4 m-2 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)] ">
+    <div  className={" player-card col-span-1  p-4 m-2 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)] " +(isYou ? 'bg-green-500':'bg-blue-500')}>
       <div>{name}</div>
       <div>Score: {score}</div>
       <div>Reason: {reason}</div>
@@ -16,7 +16,7 @@ function PlayerCard({ name, score,reason }) {
 function Game( { gameID, inGameSetter, userData }) {
   const [score, setScore] = useState(0);
   const [gameState, setGameState] = useState(gameID); //TODO more state info?
-  const [gameData, setGameData] = useState([]);
+  const [gameData, setGameData] = useState([]); // all the users
     const videoConstraints = {
       width: 640,
       height: 480,
@@ -134,7 +134,7 @@ console.log(gameState);
       {gameData.map((u) => (
         <>
         
-        <PlayerCard name={u[2]} score={u[3]} reason={u[5]} /> 
+        <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]==userData[0]} /> 
         </>
       ))}
     </>
