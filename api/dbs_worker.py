@@ -169,7 +169,7 @@ def get_game_users(conn, game_id):
     return users
 
 def get_live_game_users(conn, game_id):
-    command = "SELECT * FROM players WHERE game_id = ?"
+    command = "SELECT * FROM players WHERE game_id = ? AND active = 1"
     cur = conn.cursor()
     cur.execute(command, (game_id,))
     users = cur.fetchall()
