@@ -12,6 +12,7 @@ function PlayerCard({ name }) {
 }
 
 function Game( { gameID, inGameSetter, userData }) {
+  const [score, setScore] = useState(0);
   const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const videoConstraints = {
       width: 640,
@@ -69,6 +70,33 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [imgAll,img]);
 
+useEffect(() => {
+  const interval = setInterval(() => {
+      var url = '/api/getGameData';
+      fetch(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              userId: userData[0],
+              gameId: userData[1],
+          })
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log(data);
+          if(data != null){
+              // show the game screen
+              setScore(data.score);
+          }else{
+              alert("Game not found");
+          }
+      });
+  }, 1000);
+  return () => clearInterval(interval);
+ 
+},[]);
   return (
     <>
       <div className="col-span-3 p-4 grid-cols-subgrid ">
@@ -76,6 +104,7 @@ useEffect(() => {
           {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
         )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit</button>
       </div>
+
       <Webcam
             screenshotFormat="image/jpeg"
             videoConstraints={videoConstraints}
