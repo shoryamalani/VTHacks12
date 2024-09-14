@@ -90,6 +90,7 @@ useEffect(() => {
               // show the game screen
               setScore(data.score);
               setGameState(...gameState, {game: data.game});
+
           }else{
               alert("Game not found");
           }
@@ -127,7 +128,7 @@ useEffect(() => {
             ref={webcamRef}
             mirrored={true}
           /> 
-      {gameState.gameUsers.map((u) => (
+      {gameState.game.gameUsers.map((u) => (
         <PlayerCard name={u[2]} /> // TODO Generate player stat cards from gamestate users
       ))}
     </>
