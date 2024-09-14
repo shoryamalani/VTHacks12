@@ -116,6 +116,8 @@ def upload_video():
     
     val,reason = gazeDetector.getValueFromManyImages(mp_images)
     user = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(), user_id)
+    if user == None:
+        loguru.logger.error(f"User {user_id} not found")
     loguru.logger.info(f"User {user_id} has a score of {val}")
     if val == False:
         # reduce score by 3
