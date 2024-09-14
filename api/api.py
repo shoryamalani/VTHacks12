@@ -159,14 +159,14 @@ def upload_video():
                 gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[2])
                 # get highest user score
                 highestScore = 0
-                user = None
+                highestUser = None
                 for gameUser in gameUsers:
                     if gameUser[0] != user_id:
                         if gameUser[3] > highestScore:
                             highestScore = gameUser[3]
-                            user = gameUser
+                            highestUser = gameUser
                 if user != None:
-                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user[0], random.choice([0,0,0,0,-1]),reason,True)
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), highestUser[0], random.choice([0,0,0,0,-1]),reason,True)
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([1,1,1,1,2]),reason,True) 
                 else:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
