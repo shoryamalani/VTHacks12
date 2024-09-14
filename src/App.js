@@ -123,7 +123,7 @@ console.log(gameState);
             width={480}
             ref={webcamRef}
             mirrored={true}
-            style={{zIndex:-1}}
+            style={{zIndex:-1, position: 'absolute'}}
           />
       </div>
       
