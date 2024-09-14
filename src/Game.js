@@ -9,7 +9,8 @@ function Game( { gameID, inGameSetter, userData }) {
     const [gameData, setGameData] = useState([]); // all the users
     const [curUserData, setUserData] = useState(userData);
     const [currentGif, setCurrentGif] = useState(null);
-    const [action, setAction] = useState(null);
+    const [action, setAction] = useState("bg-[url('static/nocar.gif')]");
+
       const videoConstraints = {
         width: 640,
         height: 480,
