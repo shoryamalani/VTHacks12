@@ -161,7 +161,7 @@ def upload_video():
 
                 gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[2])
                 # get highest user score
-                highestScore = 0
+                highestScore = -1000
                 highestUser = None
                 for gameUser in gameUsers:
                     if gameUser[0] != user_id:
@@ -269,6 +269,8 @@ def get_game_data():
         score += user[3]
     
     userData = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(),userId)
+    if userData == None:
+        loguru.logger.error(f"User {userId} not found")
     if userData[3] >= userData[11]:
         powerUpAvailable = random.choice(powerUps)
         powerUpTime = powerUpTiming[powerUps.index(powerUpAvailable)]
