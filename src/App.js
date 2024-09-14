@@ -1,99 +1,132 @@
-import React from 'react';
+import logo from './logo.svg';
+import './App.css';
+import { useState, useEffect } from 'react';
 
-// import a divider
-import Divider from '@material-ui/core/Divider';
-import { Button, Input } from '@mui/material';
-import GameScreen from './GameScreen';
+function PlayerCard({ name }) {
+  return (
+    <div className="col-span-1 bg-blue-500 p-4 m-2 rounded-md">
+      <div>{name}</div>
+      <div>Performance stats</div>
+    </div>
+  );
+}
 
-// adding a line
+function Game( { gameID, inGameSetter }) {
+  const [gameState, setGameState] = useState(gameID); //TODO more state info?
 
-
-
-
-function App() {
-  // create game button handler
-  // show game variable
-
-  const [showGame, setShowGame] = React.useState(false);
-  // make this a blank dictionary
-  const [currentGame, setCurrentGame] = React.useState([]);
-  const [userData, setUserData] = React.useState([]);
-  const joinGame = () => {
-    console.log('Join Game Button Clicked');
-    // run a command to join a game and open the game page
-    var url = '/api/joinGame';
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        joinCode:  document.getElementById('gameData').value
-    })})
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        // redirect to the game page
-        // window.location.href = '/game/' + data.gameId;
-        if(data != null){
-          // show the game screen
-          setCurrentGame(data.game);
-          setUserData(data.user);
-          setShowGame(true);
-        }else{
-          alert("Game not found");
-        }
-        // show the game screen
-        // setShowGame(true);
+  useEffect(() => {
+    fetch('https://gaze.shoryamalani.com/api/getGameData')
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setGameState(data);
       });
-  }
-
-  const createGame = () => {
-    console.log('Create Game Button Clicked');
-    // run a command to create a game and open the game page
-    var url = '/api/createGame';
-
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        // redirect to the game page
-        // window.location.href = '/game/' + data.gameId;
-        // check if response code is 200
-        setUserData(data.user);
-        setCurrentGame(data.game);
-        console.log("SETTING DATA")
-        
-        // show the game screen
-        setShowGame(true);
-      });
-
-
-  }
-
+  }, []);
 
   return (
-    <div>
-{!showGame &&
-<>
-      <h1>My React App!</h1>
-      {/* text input */}
-      <Input placeholder="Enter Game ID" id='gameData' />
-      <Button onClick={joinGame} variant="contained" color="primary"> Join Game </Button>
-      <Divider />
-
-      <Button onClick={createGame} variant="contained" color="primary">
-        Create Game
-        </Button>
-        </>
+    <>
+      <div className="col-span-3 p-4 grid-cols-subgrid">
+        <button onClick={e => inGameSetter(
+          {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
+        )} className="bg-red-900 p-4 rounded-md">Exit</button>
+      </div>
+      
+      <PlayerCard name="User Info" />
+      <div className='col-span-1' />
+      <PlayerCard name="Saucy Asparagus" />
+      <PlayerCard name="Confused Carrot" />
+      <div className='col-span-1' />
+      <PlayerCard name="Wacky Watermelon" />
+      {gameState.users.map((u) => (
+        <PlayerCard name={u} /> // TODO Generate player stat cards from gamestate users
+      ))}
+    </>
+  );
 }
-        {/* if statement in react */}
-  { showGame &&
-        <GameScreen data={currentGame} userData={userData} />
+
+function GameMenu({ inGameSetter }) {
+  const [games, setGames] = useState([]);
+
+  useEffect(() => {
+    fetch('https://gaze.shoryamalani.com/api/getActiveGames')
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setGames(data);
+      });
+  }, []);
+
+  function CreateGameButton() {
+    return <button className="bg-green-700 p-4 rounded-md" onClick={e => {
+      fetch('https://gaze.shoryamalani.com/api/createGame', {
+        method: "post",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_id: 1, // TODO where are we pulling this from
+        })
+      })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        inGameSetter({playing: true, game: data.game, player: data.player}); // TODO fix data
+      });
+    }}></button>
   }
 
+  return (
+    <>
+      <div>
+        <CreateGameButton />
+        {games.map((g) => (
+          <button className="bg-green-600 p-4 rounded-md" onClick={e => {
+            fetch('https://gaze.shoryamalani.com/api/joinGame', {
+              method: "post",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                joinCode: g,
+              })
+            })
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              inGameSetter({playing: true, game: data.game, player: data.player}); // TODO fix data
+            });
+          }}>Enter Game {g}</button>
+        ))}
+      </div>
+      
+    </>
+  )
+}
 
+function GameManager () {
+  const [inGame, setInGame] = useState({playing: false, game: 0, player: "new"});
+  useEffect(() => {
+    fetch('https://gaze.shoryamalani.com/api/joinGame')
+  }, []);
+
+  if (inGame) {
+    return <Game gameID={inGame.game} inGameSetter={setInGame}/>
+  }
+  else {
+    return <GameMenu inGameSetter={setInGame}/>
+  }
+}
+
+function App() {
+  return (
+    <div className="p-12 bg-slate-800 text-slate-200 grid grid-cols-3">
+      <GameManager />
     </div>
   );
 }
