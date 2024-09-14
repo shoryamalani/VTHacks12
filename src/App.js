@@ -89,6 +89,7 @@ useEffect(() => {
           if(data != null){
               // show the game screen
               setScore(data.score);
+              setGameState(...gameState, {game: data.game});
           }else{
               alert("Game not found");
           }
@@ -102,10 +103,12 @@ useEffect(() => {
       <div className="col-span-3 p-4 grid-cols-subgrid ">
         <button onClick={e => inGameSetter(
           {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
-        )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit</button>
+        )} className="bg-red-900 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">Exit {gameID[1]}</button>
       </div>
-        <p>{score}</p>
-        <p>{gameID[1]}</p>
+        <div>
+        {/* <p>{score}</p> */}
+        
+        </div>
       <div>
       <PlayerCard name="User Info"class="player-card" />
       <div className='col-span-1 ' />
@@ -113,6 +116,9 @@ useEffect(() => {
       <PlayerCard name="Confused Carrot" />
       <div className='col-span-1' />
       <PlayerCard name="Wacky Watermelon" />
+      {gameID
+
+      }
       </div>
       <Webcam
             screenshotFormat="image/jpeg"
