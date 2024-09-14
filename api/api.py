@@ -183,7 +183,7 @@ def upload_video():
                     print(" GOTTA PEE IS ACTIVE")
                     finalJson = json.loads(user[13])
                     finalJson['missedTimes'].append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
-                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.randint(0,1),reason,False,finalJson)
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.randint(0,-1),reason,False,finalJson)
         else:
             finalJson = json.loads(user[13])
             finalJson['missedTimes'].append(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'))
