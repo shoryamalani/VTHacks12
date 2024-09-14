@@ -8,8 +8,8 @@ function Game( { gameID, inGameSetter, userData }) {
     const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const [gameData, setGameData] = useState([]); // all the users
     const [curUserData, setUserData] = useState(userData);
-    const [currentGif, setCurrentGif] = useState(null);
-    const [action, setAction] = useState("bg-[url('static/nocar.gif')]");
+    const [currentGif, setCurrentGif] = useState("bg-[url('static/nocar.gif')]");
+    const [action, setAction] = useState(null);
 
       const videoConstraints = {
         width: 640,
@@ -75,6 +75,7 @@ function Game( { gameID, inGameSetter, userData }) {
             }).then(response => response.json())
             .then(data => {
                 setAction(data.action);
+                console.log("CHANGING ACTION TO " + data.action);
             });
   
             setImgAll([]);
