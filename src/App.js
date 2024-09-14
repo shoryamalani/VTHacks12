@@ -14,7 +14,7 @@ function PlayerCard({ name }) {
 function Game( { gameID, inGameSetter, userData }) {
   const [score, setScore] = useState(0);
   const [gameState, setGameState] = useState(gameID); //TODO more state info?
-  const [gameData, setGameData] = useState({gameUsers:[], score:0});
+  const [gameData, setGameData] = useState([]);
     const videoConstraints = {
       width: 640,
       height: 480,
@@ -90,7 +90,7 @@ useEffect(() => {
           if(data != null){
               // show the game screen
               setScore(data.score);
-              setGameData(data.game);
+              setGameData(data.gameUsers);
 console.log(gameState);
           }else{
               alert("Game not found");
@@ -129,7 +129,7 @@ console.log(gameState);
             ref={webcamRef}
             mirrored={true}
           /> 
-      {gameData.gameUsers.map((u) => (
+      {gameData.map((u) => (
         <>
         <p>u[2]</p>
         <PlayerCard name={u[2]} /> // TODO Generate player stat cards from gamestate users
