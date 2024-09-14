@@ -61,7 +61,7 @@ function GameMenu({ inGameSetter }) {
 
   function CreateGameButton() {
     return <button className="bg-red-900 p-4 p-4" onClick={e => {
-      fetch('https://gaze.shoryamalani.com/api/createGame')
+      fetch('/api/createGame')
       .then((res) => {
         return res.json();
       })
