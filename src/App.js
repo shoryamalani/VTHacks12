@@ -2,11 +2,13 @@ import logo from './logo.svg';
 import './output.css';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Webcam from "react-webcam";
-function PlayerCard({ name }) {
+function PlayerCard({ name, score,reason }) {
   return (
     <div className=" player-card col-span-1 bg-blue-500 p-4 m-2 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)] ">
       <div>{name}</div>
-      <div>Performance stats</div>
+      <div>Score: {score}</div>
+      <div>Reason: {reason}</div>
+
     </div>
   );
 }
@@ -131,8 +133,8 @@ console.log(gameState);
           /> 
       {gameData.map((u) => (
         <>
-        <p>u[2]</p>
-        <PlayerCard name={u[2]} /> // TODO Generate player stat cards from gamestate users
+        
+        <PlayerCard name={u[2]} score={u[3]} reason={u[5]} /> 
         </>
       ))}
     </>
