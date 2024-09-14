@@ -259,7 +259,7 @@ def get_game_data():
     game_id = request.json['gameId']
     userId = request.json['userId']
     # get the game data
-    gameUsers = dbs_worker.get_game_users(dbs_worker.set_up_connection(), game_id)
+    gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), game_id)
     score = 0
     userData = {}
     for user in gameUsers:
