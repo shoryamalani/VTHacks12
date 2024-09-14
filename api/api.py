@@ -56,7 +56,7 @@ def about():
 @app.route('/api/getActiveGames', methods=['GET'])
 def get_active_games():
     # get the active games
-    games = dbs_worker.get_active_games(conn)
+    games = dbs_worker.get_active_games(dbs_worker.set_up_connection())
     return jsonify(games)
 
 
