@@ -135,7 +135,7 @@ def upload_video():
                 dbs_worker.update_user_power_up(dbs_worker.set_up_connection(),user_id,"",False,0,nextPowerUp)
             if user[8] == "Attention Grabbing":
                 # get all the other users
-                gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[2])
+                gameUsers = dbs_worker.get_live_game_users(dbs_worker.set_up_connection(), user[1])
                 # for each user that is not focused add one point
                 bonus = 0
                 for gameUser in gameUsers:
@@ -171,7 +171,7 @@ def upload_video():
                 if highestUser != None:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), highestUser[0], random.choice([-1]),reason,True)
                     loguru.logger.warning(f"User {highestUser[0]} has been meddled with")
-                    
+
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([2]),reason,True) 
                 else:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
