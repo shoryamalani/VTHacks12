@@ -14,6 +14,7 @@ function PlayerCard({ name }) {
 function Game( { gameID, inGameSetter, userData }) {
   const [score, setScore] = useState(0);
   const [gameState, setGameState] = useState(gameID); //TODO more state info?
+  const [gameData, setGameData] = useState({gameUsers:[], score:0});
     const videoConstraints = {
       width: 640,
       height: 480,
@@ -89,7 +90,7 @@ useEffect(() => {
           if(data != null){
               // show the game screen
               setScore(data.score);
-              setGameState(...gameState, {game: data.game});
+              setGameState(data.game);
 console.log(gameState);
           }else{
               alert("Game not found");
