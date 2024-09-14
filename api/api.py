@@ -119,7 +119,7 @@ def upload_video():
 #     return jsonify(games)
 
 
-@app.route('/api/createGame')
+@app.route('/api/createGame', methods=['POST'])
 def create_game():
     # get the user id
     # create the game
