@@ -18,7 +18,7 @@ import numpy as np
 import cv2
 app = Flask(__name__, static_folder='../public', static_url_path='/')
 
-powerUpLine = [10,250,400,575,800,1000]
+powerUpLine = [1,250,400,575,800,1000]
 powerUps = ["Devious Meddling","Perfectionist","Gotta PEE!", "Attention Grabbing"]
 powerUpTiming = [300,180,300,180]
 SESSION_TYPE = 'filesystem'
@@ -169,8 +169,8 @@ def upload_video():
                             highestScore = gameUser[3]
                             highestUser = gameUser
                 if highestUser != None:
-                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), highestUser[0], random.choice([0,0,0,0,-1]),reason,True)
-                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([1,1,1,1,2]),reason,True) 
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), highestUser[0], random.choice([-1]),reason,True)
+                    dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([2]),reason,True) 
                 else:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
 
