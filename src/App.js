@@ -81,23 +81,23 @@ function GameMenu({ inGameSetter }) {
         <CreateGameButton />
         {games.map((g) => (
           <button className="bg-red-900 p-4 p-4" onClick={e => {
-            // fetch('https://gaze.shoryamalani.com/api/joinGame', {
-            //   method: "post",
-            //   headers: {
-            //     'Accept': 'application/json',
-            //     'Content-Type': 'application/json'
-            //   },
-            //   body: JSON.stringify({
-            //     joinCode: g,
-            //   })
-            // })
-            // .then((res) => {
-            //   return res.json();
-            // })
-            // .then((data) => {
-            //   inGameSetter({playing: true, game: data.game, player: data.player}); // TODO fix data
-            // });
-          }}>Enter Game {g}</button>
+            fetch('/api/joinGame', {
+              method: "post",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                joinCode: g[1],
+              })
+            })
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              inGameSetter({playing: true, game: data.game, player: data.player}); // TODO fix data
+            });
+          }}>Enter Game {g[1]}</button>
         ))}
       </div>
       
