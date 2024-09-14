@@ -90,7 +90,7 @@ useEffect(() => {
           if(data != null){
               // show the game screen
               setScore(data.score);
-              setGameState(data.game);
+              setGameData(data.game);
 console.log(gameState);
           }else{
               alert("Game not found");
