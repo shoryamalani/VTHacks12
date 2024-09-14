@@ -61,7 +61,11 @@ function GameMenu({ inGameSetter }) {
 
   function CreateGameButton() {
     return <button className="bg-red-900 p-4 p-4" onClick={e => {
-      fetch('/api/createGame')
+      fetch('/api/createGame',
+        {
+          method: "POST",
+        }
+      )
       .then((res) => {
         return res.json();
       })
