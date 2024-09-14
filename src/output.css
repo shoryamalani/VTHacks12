@@ -738,6 +738,10 @@ video {
   background-image: url('"+currentGif+"');
 }
 
+.bg-\[url\(\'\"\+\{currentGif\}\+\"\'\)\] {
+  background-image: url('"+{currentGif}+"');
+}
+
 .bg-cover {
   background-size: cover;
 }
