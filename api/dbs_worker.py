@@ -223,7 +223,7 @@ def create_user(conn, game_id):
     randomAdjective = ['Happy', 'Sad', 'Angry', 'Excited', 'Bored', 'Tired', 'Sleepy', 'Hungry', 'Thirsty']
     randomNoun = ['Dog', 'Cat', 'Bird', 'Fish', 'Elephant', 'Lion', 'Tiger', 'Bear', 'Monkey', 'Giraffe']
     randomName = random.choice(randomAdjective) + ' ' + random.choice(randomNoun)
-    cur.execute(command, (randomName,game_id,json.dumps({"missedTimes":[]})))
+    cur.execute(command, (randomName,game_id,json.dumps({"missedTimes":[],"failRow":0})))
     loguru.logger.info(f"Created user {randomName}")
     conn.commit()
     cur.execute("SELECT last_insert_rowid()")

@@ -115,7 +115,16 @@ def upload_video():
     
     
     val,reason = gazeDetector.getValueFromManyImages(mp_images)
+    action = "none"
     user = dbs_worker.get_user_by_id(dbs_worker.set_up_connection(), user_id)
+    if val == False:
+        jsonVal = json.loads(user[13])
+        jsonVal['failRow'] += 1
+    else:
+        jsonVal = json.loads(user[13])
+        if jsonVal['failRow'] > 10:
+            action = "respawn"
+        jsonVal['failRow'] = 0
     if user == None:
         loguru.logger.error(f"User {user_id} not found")
     loguru.logger.info(f"User {user_id} has a score of {val}")
@@ -220,8 +229,19 @@ def upload_video():
         dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, -1,reason,True)
     # Now you have a list of MediaPipe Image objects
     # You can process these images using MediaPipe's tools
+    
+    if json.loads(user[13])['failRow'] == 10:
+        action = reason
+        if "down" in reason or "blinking" in reason:
+            action = "down"
+        elif "up" in reason:
+            action = "up"
+        elif "left" in reason:
+            action = "left"
+        elif "right" in reason:
+            action = "right"
 
-    return jsonify({'message': 'MediaPipe Images processed successfully'})
+    return jsonify({'message': 'MediaPipe Images processed successfully', 'action': action })
 
 
 
