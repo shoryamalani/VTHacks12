@@ -55,6 +55,7 @@
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.112",
-    "react-twitter-embed": "^4.0.4"
+    "react-twitter-embed": "^4.0.4",
+    "tailwindcss": "^3.4.11"
   }
 }

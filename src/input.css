@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Joystix';
+  src: local('Joystix'), url('./fonts/joystix.otf') format('opentype');
+}
+
+body {
+  margin: 0;
+  font-family: 'Joystix','comic sans ms';
+  /* -webkit-font-smoothing: antialiased; */
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #272531
+}
+.player-card:hover {
+  transform: scale(1.05); /* Slightly larger */
+  background-color: #4A4A5A; /* Lighter background on hover */
+}
+
+Button:hover{
+  transform: scale(1.05); /* Slightly larger */
+  background-color: #4A4A5A; /* Lighter background on hover */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+a:link {
+ 
+  color: #479ff8;
+}
+a:visited {
+ 
+  color: #CC99CC;
+}

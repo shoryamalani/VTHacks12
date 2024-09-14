@@ -1,5 +1,11 @@
+@font-face {
+  font-family: 'Joystix';
+  src: local('Joystix'), url('./fonts/joystix.otf') format('font/otf');
+}
+
 .App {
   text-align: center;
-  font-size:calc(10px+2vmin);
-  
+  font-size:calc(11px+2vmin);
+  font-family: 'Joystix', 'comic sans ms';
+  src: local('Joystix'), url('./fonts/joystix.otf') format('font/otf');
 }
