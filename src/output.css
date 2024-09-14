@@ -748,6 +748,18 @@ video {
   background-image: url('static/rightCrash.gif');
 }
 
+.bg-\[url\(\'nocar\.gif\'\)\] {
+  background-image: url('nocar.gif');
+}
+
+.bg-\[url\(\'leftCrash\.gif\'\)\] {
+  background-image: url('leftCrash.gif');
+}
+
+.bg-\[url\(\'rightCrash\.gif\'\)\] {
+  background-image: url('rightCrash.gif');
+}
+
 .bg-cover {
   background-size: cover;
 }

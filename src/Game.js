@@ -8,6 +8,8 @@ function Game( { gameID, inGameSetter, userData }) {
     const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const [gameData, setGameData] = useState([]); // all the users
     const [curUserData, setUserData] = useState(userData);
+    const [currentGif, setCurrentGif] = useState(null);
+    const [action, setAction] = useState(null);
       const videoConstraints = {
         width: 640,
         height: 480,
@@ -26,6 +28,18 @@ function Game( { gameID, inGameSetter, userData }) {
     //       setGameState(data);
     //     });
     // }, []);
+
+    useEffect(() => {
+        var urls = ['leftCrash.gif', 'rightCrash.gif', 'nocar.gif'];
+        if(action == "left"){
+            setCurrentGif("bg-[url('leftCrash.gif')]");
+        } else if(action == "right"){
+            setCurrentGif("bg-[url('rightCrash.gif')]");
+        } else if(action == "nocar"){
+            setCurrentGif("bg-[url('nocar.gif')]");
+        }
+    }, [action]);
+
     const capture = useCallback(() => {
     var imageSrc = webcamRef.current.getScreenshot();
     // console.log(imageSrc);
@@ -54,9 +68,13 @@ function Game( { gameID, inGameSetter, userData }) {
                     images:[imgAll[0], imgAll[1], imgAll[2], imgAll[3]],
                     user_id: userData[0],
                 })
-            })
+            }).then(response => response.json())
+            .then(data => {
+                setAction(data.action);
+            });
   
             setImgAll([]);
+            
             // set timeout to do nothing for a second
             
         }
@@ -120,7 +138,7 @@ function Game( { gameID, inGameSetter, userData }) {
     });
     }
     return (
-      <div className="bg-[url('static/nocar.gif')] bg-cover bg-center w-full" >
+      <div className={"bg-cover bg-center w-full" + {currentGif}} >
         <div className="col-span-3 p-4 grid grid-cols-subgrid ">
           <button onClick={e => inGameSetter(
             {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
