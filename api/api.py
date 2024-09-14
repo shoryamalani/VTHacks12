@@ -142,6 +142,7 @@ def upload_video():
                     if gameUser[0] != user_id:
                         if gameUser[4] == False:
                             bonus += 1
+                dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, bonus,reason,True)
             elif user[8] == "Perfectionist":
                 #check the last 5 minutes
                 finalJson = json.loads(user[13])
