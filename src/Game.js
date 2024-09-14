@@ -32,11 +32,11 @@ function Game( { gameID, inGameSetter, userData }) {
     useEffect(() => {
         var urls = ['leftCrash.gif', 'rightCrash.gif', 'nocar.gif'];
         if(action == "left"){
-            setCurrentGif("bg-[url('leftCrash.gif')]");
+            setCurrentGif("bg-[url('static/leftCrash.gif')]");
         } else if(action == "right"){
-            setCurrentGif("bg-[url('rightCrash.gif')]");
+            setCurrentGif("bg-[url('static/rightCrash.gif')]");
         } else if(action == "nocar"){
-            setCurrentGif("bg-[url('nocar.gif')]");
+            setCurrentGif("bg-[url('static/nocar.gif')]");
 
         }
         console.log(action);

@@ -760,6 +760,10 @@ video {
   background-image: url('rightCrash.gif');
 }
 
+.bg-\[url\(\'static\/leftCrash\.gif\'\)\] {
+  background-image: url('static/leftCrash.gif');
+}
+
 .bg-cover {
   background-size: cover;
 }
