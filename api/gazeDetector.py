@@ -340,7 +340,7 @@ def getValueFromManyImages(images):
         else:
             noneCounter += 1
     if noneCounter > 3:
-        return False, "No Face Detected"
+        return True, "No Face Detected"
     else:
     
         # average the values
