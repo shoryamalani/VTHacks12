@@ -112,7 +112,7 @@ def get_active_games(conn):
     games = cur.fetchall()
     final_games = []
     for game in games:
-        if len(get_live_game_users(conn, game[0])):
+        if len(get_live_game_users(conn, game[1])):
             final_games.append(game)
         else:
             command = "UPDATE games SET active = 0 WHERE id = ?"
