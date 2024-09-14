@@ -127,9 +127,9 @@ useEffect(() => {
             ref={webcamRef}
             mirrored={true}
           /> 
-      {/* {gameState.users.map((u) => (
-        <PlayerCard name={u} /> // TODO Generate player stat cards from gamestate users
-      ))} */}
+      {gameState.gameUsers.map((u) => (
+        <PlayerCard name={u[2]} /> // TODO Generate player stat cards from gamestate users
+      ))}
     </>
   );
 }
