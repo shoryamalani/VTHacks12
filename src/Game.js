@@ -14,6 +14,7 @@ function Game( { gameID, inGameSetter, userData }) {
     const [curUserData, setUserData] = useState(userData);
     const [currentGif, setCurrentGif] = useState(require('./static/nocar.gif'));
     const [action, setAction] = useState(null);
+    const [webcam, setWebcam] = useState(false);
 
     // after 600 milliseconds change the gif to the no car gif
     
@@ -210,6 +211,11 @@ function Game( { gameID, inGameSetter, userData }) {
     function getCurrentGif(){
         return currentGif;
     }
+
+    function toggleWebcam(){
+        alert("Webcam toggled");
+        setWebcam(!webcam);
+    }
     const greens = curUserData[3] * 10 / curUserData[11];
     const valid = curUserData[9];
     return (
@@ -223,7 +229,9 @@ function Game( { gameID, inGameSetter, userData }) {
           <button onClick={e => inGameSetter(
             {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
           )} className="bg-red-900 col-span-1 col-end-1 m-8 p-5  drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]" style={{color:'white'}}>Exit Room {gameID[1]}</button>
-        
+        {
+            <div onClick={toggleWebcam} className="w-[20%] h-[5%]  col-start-11 col-end-12 row-start-1 row-end-2"   ></div>
+        }
         {/* </div> */}
         {/* set aspect ratio to 500 by 313 */}
         <div className="col-span-3 p-2 m-11 grid grid-cols-subgrid " style={{
@@ -246,7 +254,7 @@ function Game( { gameID, inGameSetter, userData }) {
               width={480}
               ref={webcamRef}
               mirrored={true}
-              style={{zIndex:-1, position: 'absolute', top: 50, left: 50,}}
+              style={{zIndex:webcam ? 100 : -1, position: 'absolute', top: 50, left: 50}}
             />
         </div>
       </div>
