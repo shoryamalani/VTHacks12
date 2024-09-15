@@ -2,10 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import PlayerCard from "./PlayerCard";
 import Powerups from "./Powerups";
-import { Divider } from "@material-ui/core";
-
+import { Button, Divider } from "@material-ui/core";
+import useSound from 'use-sound';
+import { ButtonBase } from "@mui/material";
 
 function Game( { gameID, inGameSetter, userData }) {
+    const audioRef1 = useRef(null);
     const [score, setScore] = useState(0);
     const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const [gameData, setGameData] = useState([]); // all the users
@@ -52,24 +54,29 @@ function Game( { gameID, inGameSetter, userData }) {
     //       setGameState(data);
     //     });
     // }, []);
-    
+    const playActive = () => {
+        audioRef1.current.play();
+    }
 
     useEffect(() => {
         var urls = ['leftCrash.gif', 'rightCrash.gif', 'nocar.gif'];
         if(action == "left"){
             setCurrentGif(require('./static/leftCrash.gif'));
+            playActive();
             const timer = setTimeout(() => {
                 setCurrentGif(require('./static/nocar.gif'));
             }, 600);
             return () => clearTimeout(timer);
         } else if(action == "right"){
             setCurrentGif(require('./static/rightCrash.gif'));
+            playActive();
             const timer = setTimeout(() => {
                 setCurrentGif(require('./static/nocar.gif'));
             }, 600);
             return () => clearTimeout(timer)
         } else if (action == "down"){
             setCurrentGif(require('./static/car_crash_animation.gif'));
+            playActive();
             const timer = setTimeout(() => {
                 setCurrentGif(require('./static/nocar.gif'));
             }, 600);
@@ -78,6 +85,7 @@ function Game( { gameID, inGameSetter, userData }) {
         }
         else if(action == "up"){
             setCurrentGif(require('./static/car_crash_animation.gif'));
+            playActive();
             const timer = setTimeout(() => {
                 setCurrentGif(require('./static/nocar.gif'));
             }, 600);
@@ -174,6 +182,7 @@ function Game( { gameID, inGameSetter, userData }) {
    
   },[]);
     function activatePowerup(){
+        
         var url = '/api/activatePowerup';
         fetch(url, {
             method: 'POST',
@@ -205,6 +214,11 @@ function Game( { gameID, inGameSetter, userData }) {
     const valid = curUserData[9];
     return (
         <div className={"bg-cover bg-center w-full "} style={{backgroundImage:'url(' + currentGif + ')'}}>
+                
+            <audio ref={audioRef1}>
+        <source src={require('./static/crash.mp3')} type="audio/mpeg" />
+        <p>Your browser does not support the audio element.</p>
+      </audio>
         {/* <div className="col-span-3 p-4 grid grid-cols-subgrid "> */}
           <button onClick={e => inGameSetter(
             {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
@@ -218,7 +232,7 @@ function Game( { gameID, inGameSetter, userData }) {
         }}>
         
         <div className='grid grid-cols-4 min-w-full max-h-[80svh]'>
-        <Powerups clickable={valid} curUserData={curUserData} greens={greens} activatePowerup={() => activatePowerup} />
+        <Powerups clickable={valid} curUserData={curUserData} greens={greens} activatePowerup={activatePowerup} />
 
         {gameData.map((u, idx) => (
           <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]===userData[0]} parity={idx < 5} /> 
