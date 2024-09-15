@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import PlayerCard from "./PlayerCard";
+import Powerups from "./Powerups";
 import { Divider } from "@material-ui/core";
 
 
@@ -9,17 +10,26 @@ function Game( { gameID, inGameSetter, userData }) {
     const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const [gameData, setGameData] = useState([]); // all the users
     const [curUserData, setUserData] = useState(userData);
-    const [currentGif, setCurrentGif] = useState(require('./static/spawn.gif'));
+    const [currentGif, setCurrentGif] = useState(require('./static/nocar.gif'));
     const [action, setAction] = useState(null);
 
     // after 600 milliseconds change the gif to the no car gif
     
     useEffect(() => {
         const timer = setTimeout(() => {
-            setCurrentGif(require('./static/car_final.gif'));
+            setCurrentGif(require('./static/spawn.gif'));
+            
         }, 500);
         return () => clearTimeout(timer);
     }, []);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setCurrentGif(require('./static/car_final.gif'));
+            
+        }, 1100);
+        return () => clearTimeout(timer);
+    }, []);
+
 
     
     
@@ -193,6 +203,8 @@ function Game( { gameID, inGameSetter, userData }) {
     function getCurrentGif(){
         return currentGif;
     }
+    const greens = curUserData[3] * 10 / curUserData[11];
+    const valid = curUserData[9];
     return (
         <div className={"bg-cover bg-center w-full "} style={{backgroundImage:'url(' + currentGif + ')'}}>
         {/* <div className="col-span-3 p-4 grid grid-cols-subgrid "> */}
@@ -207,24 +219,8 @@ function Game( { gameID, inGameSetter, userData }) {
           'aspectRatio': '500/313',
         }}>
         
-        
         <div className='grid grid-cols-4 min-w-full max-h-[80svh]'>
-        <div className=" hover:scale-105 player-card col-span-1 h-25 col-start-4 row-start-3  p-3 pt-0 pb-1   drop-shadow-[0_15px_15px_rgba(185,185,185,.25)] bg-[url('static/dither_orange.png')] bg-red-900 hover:bg-red-800 text-slate-200" >
-            
-            <div style={{textAlign:'center'}} >POWERUPS</div>
-            {/* progress bar which is a 1-10 grid of boxes where the green background means its done have it in a box with a glow around it*/}
-            {curUserData[8] && !curUserData[9] && <button onClick={activatePowerup} className='p-4' >{curUserData[8]}</button>}
-            
-            <div className=" grid grid-cols-10 grid-rows-1 align-middle p-1" style={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
-                {
-                    Array.from({length: 10}, (_, i) => (
-                        <div className="bg-green-500 p-1 m-1 h-1 w-1" > </div>
-                    ))
-
-                }
-            </div>
-
-        </div>
+        <Powerups clickable={valid} curUserData={curUserData} greens={greens} activatePowerup={() => activatePowerup} />
 
         {gameData.map((u, idx) => (
           <PlayerCard name={u[2]} score={u[3]} reason={u[5]} isYou={u[0]===userData[0]} parity={idx < 5} /> 
@@ -241,11 +237,6 @@ function Game( { gameID, inGameSetter, userData }) {
               style={{zIndex:-1, position: 'absolute', top: 50, left: 50,}}
             />
         </div>
-        {/* <div style={{backgroundColor:"white"}}>
-            <h1>POWERUPS</h1>
-            <p>Next Powerup Available at score: {curUserData[11]}</p>
-            {curUserData[8] && !curUserData[9] && <button onClick={activatePowerup} className="bg-green-500 p-4 drop-shadow-[0_15px_15px_rgba(185,185,185,.25)]">{curUserData[8]}</button>}
-        </div> */}
       </div>
     );
   }
