@@ -190,7 +190,8 @@ def upload_video():
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, random.choice([2]),reason,True) 
                 else:
                     dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
-
+            else:
+                dbs_worker.update_user_score(dbs_worker.set_up_connection(), user_id, 1,reason,True)
 
                 
         else:
