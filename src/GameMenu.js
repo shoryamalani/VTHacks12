@@ -134,5 +134,4 @@ function GameMenu({ inGameSetter }) {
     )
   }
 
-
 export default GameMenu;

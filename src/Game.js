@@ -20,15 +20,13 @@ function Game( { gameID, inGameSetter, userData }) {
             setCurrentGif(require('./static/spawn.gif'));
             
         }, 500);
-        return () => clearTimeout(timer);
-    }, []);
-    useEffect(() => {
-        const timer = setTimeout(() => {
+        const timer2 = setTimeout(() => {
             setCurrentGif(require('./static/car_final.gif'));
             
         }, 1100);
-        return () => clearTimeout(timer);
+        return () => clearTimeout(timer, timer2);
     }, []);
+    
 
 
     

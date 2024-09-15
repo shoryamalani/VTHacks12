@@ -238,13 +238,13 @@ def upload_video():
     
     if json.loads(user[13])['failRow'] == 10:
         action = reason
-        if "down" in reason or "blinking" in reason:
+        if "Down" in reason or "Blinking" in reason or "No" in reason:
             action = "down"
-        elif "up" in reason:
+        elif "Up" in reason:
             action = "up"
-        elif "left" in reason:
+        elif "Left" in reason:
             action = "left"
-        elif "right" in reason:
+        elif "Right" in reason:
             action = "right"
 
     return jsonify({'message': 'MediaPipe Images processed successfully', 'action': action })
