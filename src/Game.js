@@ -8,7 +8,7 @@ function Game( { gameID, inGameSetter, userData }) {
     const [gameState, setGameState] = useState(gameID); //TODO more state info?
     const [gameData, setGameData] = useState([]); // all the users
     const [curUserData, setUserData] = useState(userData);
-    const [currentGif, setCurrentGif] = useState("nocar.gif");
+    const [currentGif, setCurrentGif] = useState(require('./static/nocar.gif'));
     const [action, setAction] = useState(null);
 
       const videoConstraints = {
@@ -32,13 +32,20 @@ function Game( { gameID, inGameSetter, userData }) {
 
     useEffect(() => {
         var urls = ['leftCrash.gif', 'rightCrash.gif', 'nocar.gif'];
-        if(action == "left"){
-            setCurrentGif("bg-[url('leftCrash.gif')]");
-        } else if(action == "right"){
-            setCurrentGif("bg-[url('rightCrash.gif')]");
+        if(action == "Looking Left"){
+            setCurrentGif(require('./static/leftCrash.gif'));
+            const timer = setTimeout(() => {
+                setCurrentGif(require('./static/nocar.gif'));
+            }, 600);
+            return () => clearTimeout(timer);
+        } else if(action == "Looking Right"){
+            setCurrentGif(require('./static/rightCrash.gif'));
+            const timer = setTimeout(() => {
+                setCurrentGif(require('./static/nocar.gif'));
+            }, 600);
+            return () => clearTimeout(timer)
         } else if(action == "nocar"){
-            setCurrentGif("bg-[url('nocar.gif')]");
-
+            setCurrentGif(require('./static/nocar.gif'))
         }
         console.log(action);
         console.log("SETTING CURRENT GIF")
@@ -86,7 +93,10 @@ function Game( { gameID, inGameSetter, userData }) {
     }, 250);
     return () => clearInterval(interval);
   }, [imgAll,img,action]);
-  
+  const gifs = [
+    { url: 'static/nocar.gif', duration: 600 }, // 5 seconds duration for gif1
+    { url: 'static/leftCrash.gif', duration: 600 }  // 3 seconds duration for gif2
+  ];
   useEffect(() => {
     const interval = setInterval(() => {
         var url = '/api/getGameData';
@@ -146,7 +156,7 @@ function Game( { gameID, inGameSetter, userData }) {
         return currentGif;
     }
     return (
-        <div className={"bg-[url('"+eval(currentGif)+"')] bg-cover bg-center w-full"}>
+        <div className={"bg-cover bg-center w-full"} style={{backgroundImage:'url(' + currentGif + ')'}}>
         <div className="col-span-3 p-4 grid grid-cols-subgrid ">
           <button onClick={e => inGameSetter(
             {playing: false, game: 0, player: "new player name"} //TODO username generation api call?
