@@ -22,7 +22,7 @@ function PlayerCard({ name, score, reason, isYou, parity }) {
         }>
           <div className={"p-2 col-start-1 col-end-1 row-start-1 row-end-1"}>{name}</div>
           <div className={"p-2 col-start-2 col-end-2 row-start-1 row-end-1 text-right"}>{score}</div>
-          <div className={'col-start-2 col-end-2 row-start-2 row-end-2 text-right absolute bottom-4 right-4 '}> {reason}</div>
+          <div className={'col-start-2 col-end-2 row-start-2 row-end-2 text-right bottom-4 right-4 '}> {reason}</div>
           <img src={animalFile}  className={"col-start-1 col-end-1 row-start-2 row-end-2 h-20"} />
           {/* <img className={"col-start-1 col-end-1 row-start-2 row-end-2"} src={require('./static/lion.png')} /> */}
         </div>
