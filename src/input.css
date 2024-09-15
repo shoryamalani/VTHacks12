@@ -29,3 +29,9 @@ a:visited {
  
   color: #CC99CC;
 }
+
+button:hover {
+  /* enlarge 1.05 */
+  transform: scale(1.05);
+  transition: transform 0.1s;
+}

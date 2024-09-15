@@ -23,7 +23,7 @@ function GameManager () {
 function App() {
   return (
     // <div className="p-12  text-slate-200 grid grid-cols-3 " style={{'z-index': 1,"backgroundColor":"#272531",minHeight:480}}>
-    <div className='flex justify-center bg-[#2e2e37]'>
+    <div className='flex justify-center bg-[#2e2e37] '>
       <GameManager />
     </div>
     // </div>
